@@ -1,9 +1,13 @@
 import { defineStore } from "pinia";
-export const useCardStore = defineStore("CardStore", {
+export const useCartStore = defineStore("CartStore", {
   state() {
     return {
       items: []
     };
+  },
+  getters: {
+    count: (state) => state.items.length,
+    isEmpty: (state) => state.count === 0,
   },
   actions: {
     addToCart(count, item) {
