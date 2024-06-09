@@ -9,7 +9,13 @@ export const useCartStore = defineStore("CartStore", {
   getters: {
     count: (state) => state.items.length,
     isEmpty: (state) => state.count === 0,
-    grouped: (state) => groupBy(state.items, (item) => item.name),
+    grouped: (state) => {
+      const grouped = groupBy(state.items, (item) => item.name);
+      const sorted = Object.keys(grouped).sort();
+      let inOrder = {};
+      sorted.forEach(key => inOrder[key] = grouped[key]);
+      return inOrder;
+    },
     groupCount: (state) => (name) => state.grouped[name].length,
     total: (state) => state.items.reduce((acc, p) => acc + (p.price), 0)
   },
@@ -20,8 +26,12 @@ export const useCartStore = defineStore("CartStore", {
         this.items.push({ ...item });
       }
     },
-    cliarItem(itemName) {
+    clearItem(itemName) {
       this.items = this.items.filter(e => e.name !== itemName);
     },
+    setItemCount(item, count) {
+      this.clearItem(item.name);
+      this.addToCart(count, item);
+    }
   }
 });
