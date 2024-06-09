@@ -1,9 +1,10 @@
 import { groupBy } from "lodash";
-import { defineStore } from "pinia";
+import { defineStore, acceptHMRUpdate } from "pinia";
+import { useAuthUserStore } from "@/stores/AuthUserStore";
 export const useCartStore = defineStore("CartStore", {
   state() {
     return {
-      items: []
+      items: [],
     };
   },
   getters: {
@@ -20,6 +21,10 @@ export const useCartStore = defineStore("CartStore", {
     total: (state) => state.items.reduce((acc, p) => acc + (p.price), 0)
   },
   actions: {
+    checkout() {
+      const authUserStore = useAuthUserStore();
+      alert(`${authUserStore.username} just bought ${this.count} items at a total of ${this.total} `);
+    },
     addToCart(count, item) {
       count = parseInt(count);
       for (let i = 0; i < count; i++) {
@@ -35,3 +40,7 @@ export const useCartStore = defineStore("CartStore", {
     }
   }
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useCartStore, import.meta.hot));
+}
